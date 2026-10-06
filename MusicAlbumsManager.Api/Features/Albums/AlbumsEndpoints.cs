@@ -7,7 +7,6 @@ public static class AlbumsEndpoints
         var group = app.MapGroup("/api/albums")
         .WithTags("Music library");
 
-        //Calculate optimal grill placement
         group.MapGet("/search", SearchAlbums.Endpoint.Handle)
             .WithName("SearchAlbums")
             .ProducesValidationProblem()
