@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="MusicAlbumsManager.Api/MusicAlbumsManager.Api.csproj" />
+  <Project Path="MusicAlbumsManager.AppHost/MusicAlbumsManager.AppHost.csproj" />
+  <Project Path="MusicAlbumsManager.ServiceDefaults/MusicAlbumsManager.ServiceDefaults.csproj" />
+</Solution>
