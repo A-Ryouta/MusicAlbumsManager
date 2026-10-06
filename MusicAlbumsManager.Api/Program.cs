@@ -1,3 +1,4 @@
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using MusicAlbumsManager.Api.Features.Albums;
 using MusicAlbumsManager.Api.Infrastructure.Database;
@@ -19,6 +20,12 @@ builder.Services.AddHttpClient<IMusicLibrarySource, DeezerMusicLibrarySource>(cl
 {
     client.BaseAddress = new Uri("https://api.deezer.com/");
 });
+
+
+// Add FluentValidation
+builder.Services.AddScoped<IValidator<AddAlbums.Request>, AddAlbumsValidator>();
+builder.Services.AddScoped<IValidator<RemoveAlbums.Request>, RemoveAlbumsValidator>();
+builder.Services.AddScoped<IValidator<SearchAlbums.Request>, SearchAlbumsValidator>();  
 
 var app = builder.Build();
 app.MapDefaultEndpoints();
