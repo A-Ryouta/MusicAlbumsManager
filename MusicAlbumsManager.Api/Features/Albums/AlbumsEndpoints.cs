@@ -5,7 +5,7 @@ public static class AlbumsEndpoints
     public static void MapAlbumsEndpoints(this WebApplication app)
     {
         var group = app.MapGroup("/api/albums")
-        .WithTags("Grill Optimization");
+        .WithTags("Music library");
 
         //Calculate optimal grill placement
         group.MapGet("/search", SearchAlbums.Endpoint.Handle)
@@ -15,14 +15,14 @@ public static class AlbumsEndpoints
             .Produces(StatusCodes.Status400BadRequest)
             .WithDescription("Searches for albums based on the provided criteria and returns the matching results");
 
-        app.MapPost("/{userName:string}", AddAlbums.Handle)
+        group.MapPost("/", AddAlbums.Handle)
             .WithName("AddAlbumsToLibrary")
             .Produces<AddAlbums.Response>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status400BadRequest)
             .Produces(StatusCodes.Status404NotFound)
             .WithDescription("Adds one or more search results to the user's album library, ignoring albums already present.");
 
-        app.MapDelete("/{userName:string}", RemoveAlbums.Handle)
+        group.MapDelete("/", RemoveAlbums.Handle)
             .WithName("RemoveAlbumsFromLibrary")
             .Produces<RemoveAlbums.Response>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status400BadRequest)

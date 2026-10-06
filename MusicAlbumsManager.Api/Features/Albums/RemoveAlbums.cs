@@ -1,4 +1,5 @@
 using FluentValidation;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MusicAlbumsManager.Api.Infrastructure.Database;
 using System.ComponentModel.DataAnnotations;
@@ -11,25 +12,22 @@ public static class RemoveAlbums
     public sealed record Response(int RemovedCount);
 
     public static async Task<IResult> Handle(
-        string userName,
-        ICollection<string> albumNames,
-        IValidator<Request> validator,
-        MusicLibraryDbContext dbContext,
+        [FromBody] Request request,
+        [FromServices]IValidator<Request> validator,
+        [FromServices] MusicLibraryDbContext dbContext,
         CancellationToken cancellationToken)
     {
-        var request = new Request(userName, albumNames);
-
         var validationResult = await validator.ValidateAsync(request, cancellationToken);
         if (!validationResult.IsValid)
             return Results.BadRequest(validationResult.Errors);
 
-        var user = await dbContext.Users.FirstOrDefaultAsync(user => string.Equals(user.Name, userName, StringComparison.InvariantCultureIgnoreCase), cancellationToken);
+        var user = await dbContext.Users.FirstOrDefaultAsync(user => string.Equals(user.Name, request.UserName, StringComparison.InvariantCultureIgnoreCase), cancellationToken);
 
         if (user is null)
             return Results.NotFound("User not found.");
 
         var albums = await dbContext.Albums
-            .Where(album => album.UserId == user.Id && albumNames.Contains(album.Name))
+            .Where(album => album.UserId == user.Id && request.AlbumNames.Contains(album.Name))
             .ToListAsync(cancellationToken);
 
         if (albums.Count > 0)
